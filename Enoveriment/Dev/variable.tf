@@ -21,3 +21,4 @@ variable "servers" {}
 variable "database" {}
 
 variable "vms" {}
+

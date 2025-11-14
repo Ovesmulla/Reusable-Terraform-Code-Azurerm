@@ -1,5 +1,5 @@
 output "rgid" {
-  value = module.resource_group.Rg-ids
+  value = module.resource_group
 }
 
 output "storage_accountid" {

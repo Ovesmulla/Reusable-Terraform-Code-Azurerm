@@ -58,3 +58,4 @@ module "virtual_machine" {
   source = "../../Module/Azure_virtual_machine"
   vms = var.vms
 }
+

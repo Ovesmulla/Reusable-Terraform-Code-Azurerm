@@ -235,28 +235,28 @@ secrets = {
 }
 servers = {
   server1 = {
-    name                          = "devserver001os"
+    name                          = "serverdbos1"
     location                      = "central india"
     resource_group_name           = "rg-dev-001"
     public_network_access_enabled = true
-    administrator_login           = "server12"
+    administrator_login           = "server15"
     administrator_login_password  = "Oves@12345"
     version                       = "12.0"
   }
   server2 = {
-    name                          = "devserver002os"
+    name                          = "serverdbos2"
     location                      = "central india"
     resource_group_name           = "rg-dev-002"
     public_network_access_enabled = true
-    administrator_login           = "server13"
+    administrator_login           = "server14"
     administrator_login_password  = "Oves@12345"
     version                       = "12.0"
   }
 }
 database = {
   db1 = {
-    name                = "devdatabase001os"
-    server_name         = "devserver001os"
+    name                = "osdb01"
+    server_name         = "serverdbos1"
     resource_group_name = "rg-dev-001"
     collation           = "SQL_Latin1_General_CP1_CI_AS"
     license_type        = "LicenseIncluded"
@@ -265,8 +265,8 @@ database = {
     enclave_type        = "VBS"
   }
   db2 = {
-    name                = "devdatabase002os"
-    server_name         = "devserver002os"
+    name                = "osdb02"
+    server_name         = "serverdbos2"
     resource_group_name = "rg-dev-002"
     collation           = "SQL_Latin1_General_CP1_CI_AS"
     license_type        = "LicenseIncluded"
@@ -327,3 +327,5 @@ vms = {
     ]
   }
 }
+
+
