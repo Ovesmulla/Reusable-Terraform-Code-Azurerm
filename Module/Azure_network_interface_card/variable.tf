@@ -11,7 +11,7 @@ variable "nic" {
     ip_configurations = map(object({
       name                          = string
       private_ip_address_allocation = string
-    }), )
+    }))
   }))
 }
 
