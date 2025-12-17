@@ -1,0 +1,101 @@
+pool: newagent
+
+trigger: none
+
+variables:
+  modulePath: '$(System.DefaultWorkingDirectory)/ParentModule/Dev'
+
+stages:
+- stage: PreCommit
+  displayName: Pre-Commit / Static Analysis Stage
+  pool: newagent
+  jobs:
+  - job: TerraformValidate
+    displayName: Terraform Validate
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(modulePath)'
+        backendServiceArm: 'mycn'
+        backendAzureRmStorageAccountName: 'osstorageos0786'
+        backendAzureRmContainerName: 'mycontainer'
+        backendAzureRmKey: 'dev.tf'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(modulePath)'
+
+  - job: TerraformFmt
+    dependsOn: TerraformValidate
+    displayName: Terraform Fmt
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'custom'
+        environmentServiceNameAzureRM: 'mycn'
+        workingDirectory: '$(modulePath)'
+        outputTo: 'console'
+        customCommand: 'fmt'
+
+- stage: plan
+  displayName: Plan & Review Stage
+  jobs:
+  - job: TerraformPlan
+    displayName: Terraform Plan
+    pool: newagent
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(modulePath)'
+        backendServiceArm: 'mycn'
+        backendAzureRmStorageAccountName: 'osstorageos0786'
+        backendAzureRmContainerName: 'mycontainer'
+        backendAzureRmKey: 'dev.tf'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(modulePath)'
+        environmentServiceNameAzureRM: 'mycn'
+
+- stage: approval
+  dependsOn: plan
+  displayName: Approval & Governance Stage
+  jobs:
+  - job: ManualApproval
+    displayName: Manual Approval
+    pool: server
+    steps:
+    - task: ManualValidation@1
+      inputs:
+        notifyUsers: 'oves.mulla@gmail.com'
+
+- stage: apply
+  dependsOn: approval
+  displayName: Deploy / Apply Stage
+  jobs:
+  - job: TerraformApply
+    displayName: Terraform Apply
+    pool: newagent
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(modulePath)'
+        backendServiceArm: 'mycn'
+        backendAzureRmStorageAccountName: 'osstorageos0786'
+        backendAzureRmContainerName: 'mycontainer'
+        backendAzureRmKey: 'dev.tf'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(modulePath)'
+        environmentServiceNameAzureRM: 'mycn'
